@@ -59,14 +59,14 @@ pipeline {
                     ),
 		    string(
 			credentialsId: 'key',
-			variable: 'API_KEY'
+			variable: 'DJANGO_SECRET_KEY'
 		     )
                 ]) {
                     sh '''
                         kubectl create secret generic pydjango-secret \
                             --from-literal=DB_USER="$DB_USER" \
                             --from-literal=DB_PASS="$DB_PASS" \
-			    --from-literal=API_KEY="$DJANGO_SECRET_KEY" \
+			    --from-literal=DJANGO_SECRET_KEY="$DJANGO_SECRET_KEY" \
                             --dry-run=client -o yaml | kubectl apply -f -
                     '''
                 }
