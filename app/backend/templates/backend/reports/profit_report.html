@@ -1,0 +1,331 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+
+        <h1>
+            Profit Report
+            <small>Date Wise Profit Analysis</small>
+        </h1>
+
+        <ol class="breadcrumb">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    <i class="fa fa-dashboard"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li class="active">
+                Profit Report
+            </li>
+
+        </ol>
+
+    </section>
+
+    <section class="content">
+
+        <!-- Filter Box -->
+        <div class="box box-primary">
+
+            <div class="box-header with-border">
+
+                <h3 class="box-title">
+                    Filter Profit Report
+                </h3>
+
+            </div>
+
+            <form method="GET">
+
+                <div class="box-body">
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+
+                            <label>
+                                From Date
+                            </label>
+
+                            <input type="date"
+                                   name="from_date"
+                                   value="{{ from_date }}"
+                                   class="form-control">
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <label>
+                                To Date
+                            </label>
+
+                            <input type="date"
+                                   name="to_date"
+                                   value="{{ to_date }}"
+                                   class="form-control">
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label>&nbsp;</label>
+
+                            <br>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+
+                                <i class="fa fa-search"></i>
+                                Filter
+
+                            </button>
+
+                            <a href="{% url 'profit_report' %}"
+                               class="btn btn-default">
+
+                                <i class="fa fa-refresh"></i>
+                                Reset
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- Summary Card -->
+        <div class="row">
+
+            <div class="col-lg-3 col-xs-6">
+
+                <div class="small-box bg-green">
+
+                    <div class="inner">
+
+                        <h3>
+                            ₹{{ total_profit }}
+                        </h3>
+
+                        <p>
+                            Total Profit
+                        </p>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-money"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-xs-6">
+
+                <div class="small-box bg-aqua">
+
+                    <div class="inner">
+
+                        <h3>
+                            {{ items.count }}
+                        </h3>
+
+                        <p>
+                            Total Items Sold
+                        </p>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-shopping-cart"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Profit Table -->
+        <div class="box box-success">
+
+            <div class="box-header with-border">
+
+                <h3 class="box-title">
+
+                    Profit Details
+
+                </h3>
+
+                <div class="box-tools pull-right">
+
+                    <a href="?from_date={{ from_date }}&to_date={{ to_date }}&export=pdf"
+                       class="btn btn-danger btn-sm">
+
+                        <i class="fa fa-file-pdf-o"></i>
+                        Export PDF
+
+                    </a>
+
+                    <a href="?from_date={{ from_date }}&to_date={{ to_date }}&export=excel"
+                       class="btn btn-success btn-sm">
+
+                        <i class="fa fa-file-excel-o"></i>
+                        Export Excel
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="box-body table-responsive">
+
+                <table class="table table-bordered table-striped">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>
+                                Invoice No
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Product
+                            </th>
+
+                            <th>
+                                Qty
+                            </th>
+
+                            <th>
+                                Purchase Price
+                            </th>
+
+                            <th>
+                                Selling Price
+                            </th>
+
+                            <th>
+                                Profit
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in items %}
+
+                        <tr>
+
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+
+                            <td>
+                                {{ item.invoice.invoice_no }}
+                            </td>
+
+                            <td>
+                                {{ item.invoice.created_at|date:"d-m-Y" }}
+                            </td>
+
+                            <td>
+                                {{ item.product.product_name }}
+                            </td>
+
+                            <td>
+                                {{ item.quantity }}
+                            </td>
+
+                            <td>
+                                ₹{{ item.product.purchase_price }}
+                            </td>
+
+                            <td>
+                                ₹{{ item.price }}
+                            </td>
+
+                            <td>
+
+                                ₹{% widthratio item.price|add:"-"|add:item.product.purchase_price 1 item.quantity %}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="8"
+                                class="text-center text-danger">
+
+                                No records found.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                    <tfoot>
+
+                        <tr>
+
+                            <th colspan="7"
+                                class="text-right">
+
+                                Total Profit
+
+                            </th>
+
+                            <th>
+
+                                ₹{{ total_profit }}
+
+                            </th>
+
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+```

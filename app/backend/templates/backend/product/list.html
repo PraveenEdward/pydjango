@@ -1,0 +1,296 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+
+        <h1>
+            Product
+            <small>Manage Products</small>
+        </h1>
+
+        <ol class="breadcrumb">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    <i class="fa fa-dashboard"></i> Home
+                </a>
+            </li>
+
+            <li class="active">
+                Product
+            </li>
+
+        </ol>
+
+    </section>
+
+    <section class="content">
+
+        <div class="row">
+
+            <div class="col-xs-12">
+
+                <div class="box">
+
+                    <div class="box-header">
+
+                        <h3 class="box-title">
+                            Product List
+                        </h3>
+
+                        <div class="pull-right">
+
+                            <a href="{% url 'product_add' %}"
+                               class="btn btn-primary">
+
+                                <i class="fa fa-plus"></i>
+                                Add Product
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <div class="box-body">
+
+                        <form method="GET">
+
+                            <div class="row">
+
+                                <div class="col-md-2">
+
+                                    <input type="text"
+                                           name="q"
+                                           class="form-control"
+                                           placeholder="Search Product..."
+                                           value="{{ request.GET.q }}">
+
+                                </div>
+
+                                <div>
+
+                                    <button type="submit"
+                                            class="btn btn-success">
+
+                                        Search
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                        <br>
+
+                        <table class="table table-bordered table-striped">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>ID</th>
+                                    <th>Image</th>
+                                    <th>Barcode</th>
+                                    <th>Category</th>
+                                    <th>Product</th>
+                                    <th>Purchase</th>
+                                    <th>Selling</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                    <th width="180">Action</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for product in products %}
+
+                                <tr>
+
+                                    <td>{{ product.id }}</td>
+
+                                    <td>
+
+                                        {% if product.image %}
+
+                                            <img src="{{ product.image.url }}"
+                                                 width="50"
+                                                 height="50">
+
+                                        {% else %}
+
+                                            No Image
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+                                        {{ product.barcode }}
+                                    </td>
+
+                                    <td>
+                                        {{ product.category }}
+                                    </td>
+
+                                    <td>
+                                        {{ product.product_name }}
+                                    </td>
+
+                                    <td>
+                                        ₹ {{ product.purchase_price }}
+                                    </td>
+
+                                    <td>
+                                        ₹ {{ product.selling_price }}
+                                    </td>
+
+                                    <td>
+                                        {{ product.stock }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if product.low_stock %}
+
+                                            <span class="label label-danger">
+                                                Low Stock
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="label label-success">
+                                                In Stock
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+
+                                        <a href="{% url 'product_update' product.id %}"
+                                           class="btn btn-warning btn-sm">
+
+                                            <i class="fa fa-edit"></i>
+
+                                            Edit
+
+                                        </a>
+
+                                        <a href="{% url 'product_delete' product.id %}"
+                                           class="btn btn-danger btn-sm"
+                                           onclick="return confirm('Delete Product?')">
+
+                                            <i class="fa fa-trash">
+
+                                                Delete
+
+                                            </i>
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+
+                                    <td colspan="10"
+                                        class="text-center">
+
+                                        No Products Found
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div class="box-footer clearfix">
+
+                        <ul class="pagination pagination-sm no-margin pull-right">
+
+                            {% if page_obj.has_previous %}
+
+                                <li>
+                                    <a href="?page=1">&laquo; First</a>
+                                </li>
+
+                                <li>
+                                    <a href="?page={{ page_obj.previous_page_number }}">
+                                        Previous
+                                    </a>
+                                </li>
+
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+
+                                {% if page_obj.number == num %}
+
+                                    <li class="active">
+                                        <a href="#">
+                                            {{ num }}
+                                        </a>
+                                    </li>
+
+                                {% else %}
+
+                                    <li>
+                                        <a href="?page={{ num }}">
+                                            {{ num }}
+                                        </a>
+                                    </li>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+
+                                <li>
+                                    <a href="?page={{ page_obj.next_page_number }}">
+                                        Next
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="?page={{ page_obj.paginator.num_pages }}">
+                                        Last &raquo;
+                                    </a>
+                                </li>
+
+                            {% endif %}
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

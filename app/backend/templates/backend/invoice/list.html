@@ -1,0 +1,266 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+
+        <h1>
+            Invoice
+            <small>Manage Invoices</small>
+        </h1>
+
+        <ol class="breadcrumb">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    <i class="fa fa-dashboard"></i> Home
+                </a>
+            </li>
+
+            <li class="active">
+                Invoice
+            </li>
+
+        </ol>
+
+    </section>
+
+    <section class="content">
+
+        <div class="row">
+
+            <div class="col-xs-12">
+
+                <div class="box">
+
+                    <div class="box-header">
+
+                        <h3 class="box-title">
+                            Invoice List
+                        </h3>
+
+                        <div class="pull-right">
+
+                            <a href="{% url 'invoice_create' %}"
+                               class="btn btn-primary">
+
+                                <i class="fa fa-plus"></i>
+                                Create Invoice
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <div class="box-body">
+
+                        <form method="GET">
+
+                            <div class="row">
+
+                                <div class="col-md-3">
+
+                                    <input type="text"
+                                           name="q"
+                                           class="form-control"
+                                           placeholder="Search Invoice"
+                                           value="{{ request.GET.q }}">
+
+                                </div>
+
+                                <div class="col-md-2">
+
+                                    <button type="submit"
+                                            class="btn btn-success">
+
+                                        <i class="fa fa-search"></i>
+                                        Search
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                        <br>
+
+                        <table class="table table-bordered table-striped">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>ID</th>
+                                    <th>Invoice No</th>
+                                    <th>Customer</th>
+                                    <th>Mobile</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                    <th>Discount</th>
+                                    <th>Grand Total</th>
+                                    <th>Payment</th>
+                                    <th>Date</th>
+                                    <th width="220">Action</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for invoice in invoices %}
+
+                                <tr>
+
+                                    <td>{{ invoice.id }}</td>
+
+                                    <td>{{ invoice.invoice_no }}</td>
+
+                                    <td>{{ invoice.customer_name }}</td>
+
+                                    <td>{{ invoice.customer_mobile }}</td>
+
+                                    <td>{{ invoice.total_qty }}</td>
+
+                                    <td>₹{{ invoice.total_amount }}</td>
+
+                                    <td>₹{{ invoice.discount_amount }}</td>
+
+                                    <td>
+                                        <strong>
+                                            ₹{{ invoice.grand_total }}
+                                        </strong>
+                                    </td>
+
+                                    <td>{{ invoice.payment_method }}</td>
+
+                                    <td>
+                                        {{ invoice.created_at|date:"d-m-Y h:i A" }}
+                                    </td>
+
+                                    <td>
+
+                                        <a href="{% url 'invoice_update' invoice.id %}"
+                                           class="btn btn-warning btn-sm">
+
+                                            <i class="fa fa-edit"> Edit</i>
+
+                                        </a>
+
+                                        <a href="{% url 'invoice_delete' invoice.id %}"
+                                           class="btn btn-danger btn-sm">
+
+                                            <i class="fa fa-trash">Delete</i>
+
+                                        </a>
+
+                                        <a href="{% url 'invoice_pdf' invoice.id %}"
+                                           class="btn btn-success btn-sm">
+
+                                            <i class="fa fa-file-pdf-o">PDF</i>
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+
+                                    <td colspan="11"
+                                        class="text-center">
+
+                                        No Invoice Found
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div class="box-footer clearfix">
+
+                        <ul class="pagination pagination-sm no-margin pull-right">
+
+                            {% if page_obj.has_previous %}
+
+                                <li>
+                                    <a href="?page=1&q={{ request.GET.q }}">
+                                        First
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}">
+                                        Previous
+                                    </a>
+                                </li>
+
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+
+                                {% if page_obj.number == num %}
+
+                                    <li class="active">
+                                        <a href="#">
+                                            {{ num }}
+                                        </a>
+                                    </li>
+
+                                {% else %}
+
+                                    <li>
+                                        <a href="?page={{ num }}&q={{ request.GET.q }}">
+                                            {{ num }}
+                                        </a>
+                                    </li>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+
+                                <li>
+                                    <a href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}">
+                                        Next
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="?page={{ page_obj.paginator.num_pages }}&q={{ request.GET.q }}">
+                                        Last
+                                    </a>
+                                </li>
+
+                            {% endif %}
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

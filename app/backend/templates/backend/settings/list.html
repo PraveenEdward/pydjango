@@ -1,0 +1,237 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+
+        <h1>
+            Shop Settings
+            <small>Manage Settings</small>
+        </h1>
+
+        <ol class="breadcrumb">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    <i class="fa fa-dashboard"></i>
+                    Home
+                </a>
+            </li>
+
+            <li class="active">
+                Settings
+            </li>
+
+        </ol>
+
+    </section>
+
+    <section class="content">
+
+        <div class="row">
+
+            <div class="col-xs-12">
+
+                <div class="box">
+
+                    <div class="box-header">
+
+                        <h3 class="box-title">
+                            Settings List
+                        </h3>
+
+                        <div class="pull-right">
+
+                            <a href="{% url 'settings_add' %}"
+                               class="btn btn-primary">
+
+                                <i class="fa fa-plus"></i>
+                                Add Settings
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <div class="box-body">
+
+                        <table class="table table-bordered table-striped">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>ID</th>
+                                    <th>Logo</th>
+                                    <th>Shop Name</th>
+                                    <th>Mobile</th>
+                                    <th>Email</th>
+                                    <th>Invoice Prefix</th>
+                                    <th>Currency</th>
+                                    <th width="180">Action</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for setting in settings_list %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ setting.id }}
+                                    </td>
+
+                                    <td>
+                                        {% if setting.logo %}
+                                            <img src="{{ setting.logo.url }}"
+                                                 width="50"
+                                                 height="50"
+                                                 class="img-thumbnail">
+                                        {% else %}
+                                            No Logo
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {{ setting.shop_name }}
+                                    </td>
+
+                                    <td>
+                                        {{ setting.mobile }}
+                                    </td>
+
+                                    <td>
+                                        {{ setting.email }}
+                                    </td>
+
+                                    <td>
+                                        {{ setting.invoice_prefix }}
+                                    </td>
+
+                                    <td>
+                                        {{ setting.currency_symbol }}
+                                    </td>
+
+                                    <td>
+
+                                        <a href="{% url 'settings_update' setting.id %}"
+                                           class="btn btn-warning btn-sm">
+
+                                            <i class="fa fa-edit"></i>
+                                            Edit
+
+                                        </a>
+
+                                        <a href="{% url 'settings_delete' setting.id %}"
+                                           class="btn btn-danger btn-sm"
+                                           onclick="return confirm('Are you sure want to delete?')">
+
+                                            <i class="fa fa-trash"></i>
+                                            Delete
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+
+                                    <td colspan="8"
+                                        class="text-center">
+
+                                        No Settings Found
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div class="box-footer clearfix">
+
+                        <ul class="pagination pagination-sm no-margin pull-right">
+
+                            {% if page_obj.has_previous %}
+
+                                <li>
+                                    <a href="?page=1">
+                                        First
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="?page={{ page_obj.previous_page_number }}">
+                                        Previous
+                                    </a>
+                                </li>
+
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+
+                                {% if page_obj.number == num %}
+
+                                    <li class="active">
+                                        <a href="#">
+                                            {{ num }}
+                                        </a>
+                                    </li>
+
+                                {% else %}
+
+                                    <li>
+                                        <a href="?page={{ num }}">
+                                            {{ num }}
+                                        </a>
+                                    </li>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+
+                                <li>
+                                    <a href="?page={{ page_obj.next_page_number }}">
+                                        Next
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="?page={{ page_obj.paginator.num_pages }}">
+                                        Last
+                                    </a>
+                                </li>
+
+                            {% endif %}
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

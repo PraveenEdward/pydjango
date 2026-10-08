@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pydjango-deployment
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: pydjango-label
+
+  template:
+    metadata:
+      labels:
+        app: pydjango-label
+
+    spec:
+      containers:
+        - name: pydjango
+          image: praveenedward/pydjango:v1
+          envFrom:
+            - configMapRef:
+                name: pydjango-config
+            - secretRef:
+                name: pydjango-secret
+          ports:
+            - containerPort: 8000
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+
+            limits:
+              cpu: 200m
+              memory: 128Mi

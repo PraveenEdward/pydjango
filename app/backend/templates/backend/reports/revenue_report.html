@@ -1,0 +1,363 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+
+        <h1>
+            Revenue Report
+            <small>Weekly / Monthly / Yearly Revenue</small>
+        </h1>
+
+        <ol class="breadcrumb">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    <i class="fa fa-dashboard"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li class="active">
+                Revenue Report
+            </li>
+
+        </ol>
+
+    </section>
+
+    <section class="content">
+
+        <!-- Filter Box -->
+        <div class="box box-primary">
+
+            <div class="box-header with-border">
+
+                <h3 class="box-title">
+                    Filter Revenue Report
+                </h3>
+
+            </div>
+
+            <form method="GET">
+
+                <div class="box-body">
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+
+                            <label>
+                                From Date
+                            </label>
+
+                            <input type="date"
+                                   name="from_date"
+                                   value="{{ from_date }}"
+                                   class="form-control">
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <label>
+                                To Date
+                            </label>
+
+                            <input type="date"
+                                   name="to_date"
+                                   value="{{ to_date }}"
+                                   class="form-control">
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label>&nbsp;</label>
+
+                            <br>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+
+                                <i class="fa fa-search"></i>
+                                Filter
+
+                            </button>
+
+                            <a href="{% url 'revenue_report' %}"
+                               class="btn btn-default">
+
+                                <i class="fa fa-refresh"></i>
+                                Reset
+
+                            </a>
+
+                            <a href="?export=excel{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+                               class="btn btn-success">
+
+                                <i class="fa fa-file-excel-o"></i>
+                                Export Excel
+
+                            </a>
+
+                            <a href="?export=pdf{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+                               class="btn btn-danger">
+
+                                <i class="fa fa-file-pdf-o"></i>
+                                Export PDF
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- Revenue Summary -->
+
+        <div class="row">
+
+            <div class="col-lg-3 col-xs-6">
+
+                <div class="small-box bg-aqua">
+
+                    <div class="inner">
+
+                        <h3>
+                            ₹{{ weekly_revenue }}
+                        </h3>
+
+                        <p>
+                            Weekly Revenue
+                        </p>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-calendar"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-xs-6">
+
+                <div class="small-box bg-green">
+
+                    <div class="inner">
+
+                        <h3>
+                            ₹{{ monthly_revenue }}
+                        </h3>
+
+                        <p>
+                            Monthly Revenue
+                        </p>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-line-chart"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-xs-6">
+
+                <div class="small-box bg-yellow">
+
+                    <div class="inner">
+
+                        <h3>
+                            ₹{{ yearly_revenue }}
+                        </h3>
+
+                        <p>
+                            Yearly Revenue
+                        </p>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-bar-chart"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-xs-6">
+
+                <div class="small-box bg-red">
+
+                    <div class="inner">
+
+                        <h3>
+                            ₹{{ total_revenue }}
+                        </h3>
+
+                        <p>
+                            Filter Revenue
+                        </p>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-money"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Revenue Table -->
+
+        <div class="box box-success">
+
+            <div class="box-header with-border">
+
+                <h3 class="box-title">
+                    Revenue Details
+                </h3>
+
+            </div>
+
+            <div class="box-body table-responsive">
+
+                <table class="table table-bordered table-striped">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Invoice No
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Customer
+                            </th>
+
+                            <th>
+                                Payment
+                            </th>
+
+                            <th>
+                                Revenue
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for invoice in invoices %}
+
+                        <tr>
+
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+
+                            <td>
+                                {{ invoice.invoice_no }}
+                            </td>
+
+                            <td>
+                                {{ invoice.created_at|date:"d-m-Y" }}
+                            </td>
+
+                            <td>
+                                {{ invoice.customer_name }}
+                            </td>
+
+                            <td>
+                                {{ invoice.payment_method }}
+                            </td>
+
+                            <td>
+                                ₹{{ invoice.grand_total }}
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="6"
+                                class="text-center text-danger">
+
+                                No Revenue Records Found.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                    <tfoot>
+
+                        <tr>
+
+                            <th colspan="5"
+                                class="text-right">
+
+                                Total Revenue
+
+                            </th>
+
+                            <th>
+
+                                ₹{{ total_revenue }}
+
+                            </th>
+
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+

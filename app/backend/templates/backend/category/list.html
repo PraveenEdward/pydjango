@@ -1,0 +1,211 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+        <h1>
+            Category
+            <small>Manage Categories</small>
+        </h1>
+
+        <ol class="breadcrumb">
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    <i class="fa fa-dashboard"></i> Home
+                </a>
+            </li>
+            <li class="active">Category</li>
+        </ol>
+    </section>
+
+    <section class="content">
+
+        <div class="row">
+
+            <div class="col-xs-12">
+
+                <div class="box">
+
+                    <div class="box-header">
+
+                        <h3 class="box-title">
+                            Category List
+                        </h3>
+
+                        <div class="pull-right">
+
+                            <a href="{% url 'category_add' %}"
+                               class="btn btn-primary">
+
+                                <i class="fa fa-plus"></i>
+                                Add Category
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <div class="box-body">
+
+                        <form method="GET">
+
+                            <div class="row">
+
+                                <div class="col-md-2">
+
+                                    <input type="text"
+                                           name="q"
+                                           class="form-control"
+                                           placeholder="Search Category..."
+                                           value="{{ request.GET.q }}">
+
+                                </div>
+
+                                <div>
+
+                                    <button type="submit"
+                                            class="btn btn-success">
+
+                                        Search
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                        <br>
+
+                        <table class="table table-bordered table-striped">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>ID</th>
+                                    <th>Category Name</th>
+                                    <th>Created Date</th>
+                                    <th width="180">Action</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for category in categories %}
+
+                                <tr>
+
+                                    <td>{{ category.id }}</td>
+
+                                    <td>{{ category.category_name }}</td>
+
+                                    <td>
+                                        {{ category.created_at|date:"d-m-Y h:i A" }}
+                                    </td>
+
+                                    <td>
+                                        <a href="{% url 'category_update' category.id %}" class="btn btn-warning btn-sm"> <i class="fa fa-edit"></i> Edit </a>
+                                        <a href="{% url 'category_delete' category.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure want to delete?')"> <i class="fa fa-trash"></i> Delete </a>
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+
+                                    <td colspan="4"
+                                        class="text-center">
+
+                                        No Categories Found
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div class="box-footer clearfix">
+
+                        <ul class="pagination pagination-sm no-margin pull-right">
+
+                            {% if page_obj.has_previous %}
+
+                                <li>
+                                    <a href="?page=1">&laquo; First</a>
+                                </li>
+
+                                <li>
+                                    <a href="?page={{ page_obj.previous_page_number }}">
+                                        Previous
+                                    </a>
+                                </li>
+
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+
+                                {% if page_obj.number == num %}
+
+                                    <li class="active">
+                                        <a href="#">
+                                            {{ num }}
+                                        </a>
+                                    </li>
+
+                                {% else %}
+
+                                    <li>
+                                        <a href="?page={{ num }}">
+                                            {{ num }}
+                                        </a>
+                                    </li>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+
+                                <li>
+                                    <a href="?page={{ page_obj.next_page_number }}">
+                                        Next
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="?page={{ page_obj.paginator.num_pages }}">
+                                        Last &raquo;
+                                    </a>
+                                </li>
+
+                            {% endif %}
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,306 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+
+        <h1>
+            Stock Report
+            <small>Stock Movement History</small>
+        </h1>
+
+        <ol class="breadcrumb">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    <i class="fa fa-dashboard"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li class="active">
+                Stock Report
+            </li>
+
+        </ol>
+
+    </section>
+
+    <section class="content">
+
+        <!-- Filter -->
+        <div class="box box-primary">
+
+            <div class="box-header with-border">
+
+                <h3 class="box-title">
+                    Filter Stock Report
+                </h3>
+
+            </div>
+
+            <form method="GET">
+
+                <div class="box-body">
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+
+                            <label>From Date</label>
+
+                            <input type="date"
+                                   name="from_date"
+                                   value="{{ from_date }}"
+                                   class="form-control">
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <label>To Date</label>
+
+                            <input type="date"
+                                   name="to_date"
+                                   value="{{ to_date }}"
+                                   class="form-control">
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label>&nbsp;</label>
+
+                            <br>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+
+                                <i class="fa fa-search"></i>
+                                Filter
+
+                            </button>
+
+                            <a href="{% url 'stock_report' %}"
+                               class="btn btn-default">
+
+                                <i class="fa fa-refresh"></i>
+                                Reset
+
+                            </a>
+
+                            <a href="?export=excel{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+                               class="btn btn-success">
+
+                                <i class="fa fa-file-excel-o"></i>
+                                Export Excel
+
+                            </a>
+
+                            <a href="?export=pdf{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+                               class="btn btn-danger">
+
+                                <i class="fa fa-file-pdf-o"></i>
+                                Export PDF
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- Summary -->
+        <div class="row">
+
+            <div class="col-lg-4 col-xs-12">
+
+                <div class="small-box bg-aqua">
+
+                    <div class="inner">
+
+                        <h3>{{ total_products }}</h3>
+
+                        <p>Overall Product Count</p>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-cubes"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 col-xs-12">
+
+                <div class="small-box bg-green">
+
+                    <div class="inner">
+
+                        <h3>{{ total_stock_in }}</h3>
+
+                        <p>Total Stock Added</p>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-arrow-down"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 col-xs-12">
+
+                <div class="small-box bg-red">
+
+                    <div class="inner">
+
+                        <h3>{{ total_stock_out }}</h3>
+
+                        <p>Total Stock Removed</p>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-arrow-up"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Stock History Table -->
+        <div class="box box-success">
+
+            <div class="box-header with-border">
+
+                <h3 class="box-title">
+                    Stock Change History
+                </h3>
+
+            </div>
+
+            <div class="box-body table-responsive">
+
+                <table class="table table-bordered table-striped">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Product Name</th>
+                            <th>Previous Stock</th>
+                            <th>Added/Removed</th>
+                            <th>Current Stock</th>
+                            <th>Action</th>
+                            <th>Remarks</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for history in histories %}
+
+                        <tr>
+
+                            <td>{{ forloop.counter }}</td>
+
+                            <td>
+                                {{ history.created_at|date:"d-m-Y H:i" }}
+                            </td>
+
+                            <td>
+                                {{ history.product.product_name }}
+                            </td>
+
+                            <td>
+                                {{ history.previous_stock }}
+                            </td>
+
+                            <td>
+                                {{ history.quantity }}
+                            </td>
+
+                            <td>
+                                {{ history.current_stock }}
+                            </td>
+
+                            <td>
+
+                                {% if history.action == 'IN' %}
+
+                                <span class="label label-success">
+
+                                    Stock Added
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="label label-danger">
+
+                                    Stock Removed
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ history.remarks }}
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="8"
+                                class="text-center text-danger">
+
+                                No stock records found.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

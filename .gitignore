@@ -1,0 +1,27 @@
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+db.sqlite3
+*.log
+
+# Static/media generated files
+media/
+staticfiles/
+
+# IDE
+.vscode/
+.idea/
+
+# docker
+
+.dockerignore

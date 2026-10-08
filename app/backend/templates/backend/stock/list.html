@@ -1,0 +1,287 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+
+        <h1>
+            Stock History
+            <small>Stock Movement Report</small>
+        </h1>
+
+        <ol class="breadcrumb">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    <i class="fa fa-dashboard"></i>
+                    Home
+                </a>
+            </li>
+
+            <li class="active">
+                Stock History
+            </li>
+
+        </ol>
+
+    </section>
+
+    <section class="content">
+
+        <div class="row">
+
+            <div class="col-xs-12">
+
+                <div class="box">
+
+                    <div class="box-header">
+
+                        <h3 class="box-title">
+                            Stock History List
+                        </h3>
+
+                    </div>
+
+                    <div class="box-body">
+
+                        <form method="GET">
+
+                            <div class="row">
+
+                                <div class="col-md-4">
+
+                                    <input type="text"
+                                           name="q"
+                                           class="form-control"
+                                           placeholder="Search Product Name / Barcode"
+                                           value="{{ request.GET.q }}">
+
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    <select name="category"
+                                            class="form-control">
+
+                                        <option value="">
+                                            All Categories
+                                        </option>
+
+                                        {% for category in categories %}
+
+                                        <option value="{{ category.id }}"
+                                            {% if request.GET.category == category.id|stringformat:"s" %}
+                                                selected
+                                            {% endif %}>
+
+                                            {{ category.category_name }}
+
+                                        </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+                                <div class="col-md-2">
+
+                                    <button type="submit"
+                                            class="btn btn-success">
+
+                                        <i class="fa fa-search"></i>
+                                        Search
+
+                                    </button>
+
+                                </div>
+
+                                <div class="col-md-2">
+
+                                    <a href="{% url 'stock_history' %}"
+                                       class="btn btn-default">
+
+                                        Reset
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                        <br>
+
+                        <table class="table table-bordered table-striped">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>ID</th>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Action</th>
+                                    <th>Previous Stock</th>
+                                    <th>Qty</th>
+                                    <th>Current Stock</th>
+                                    <th>Remarks</th>
+                                    <th>Date</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for stock in stocks %}
+
+                                <tr>
+
+                                    <td>{{ stock.id }}</td>
+
+                                    <td>
+                                        {{ stock.product.product_name }}
+                                    </td>
+
+                                    <td>
+                                        {{ stock.product.category.category_name }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if stock.action == 'IN' %}
+
+                                        <span class="label label-success">
+                                            Stock Added
+                                        </span>
+
+                                        {% else %}
+
+                                        <span class="label label-danger">
+                                            Stock Removed
+                                        </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+                                        {{ stock.previous_stock }}
+                                    </td>
+
+                                    <td>
+                                        {{ stock.quantity }}
+                                    </td>
+
+                                    <td>
+                                        {{ stock.current_stock }}
+                                    </td>
+
+                                    <td>
+                                        {{ stock.remarks }}
+                                    </td>
+
+                                    <td>
+                                        {{ stock.created_at|date:"d-m-Y h:i A" }}
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+
+                                    <td colspan="9"
+                                        class="text-center">
+
+                                        No Stock History Found
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div class="box-footer clearfix">
+
+                        <ul class="pagination pagination-sm no-margin pull-right">
+
+                            {% if page_obj.has_previous %}
+
+                            <li>
+                                <a href="?page=1&q={{ request.GET.q }}&category={{ request.GET.category }}">
+                                    First
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}&category={{ request.GET.category }}">
+                                    Previous
+                                </a>
+                            </li>
+
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+
+                                {% if page_obj.number == num %}
+
+                                <li class="active">
+                                    <a href="#">
+                                        {{ num }}
+                                    </a>
+                                </li>
+
+                                {% else %}
+
+                                <li>
+                                    <a href="?page={{ num }}&q={{ request.GET.q }}&category={{ request.GET.category }}">
+                                        {{ num }}
+                                    </a>
+                                </li>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+
+                            <li>
+                                <a href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}&category={{ request.GET.category }}">
+                                    Next
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="?page={{ page_obj.paginator.num_pages }}&q={{ request.GET.q }}&category={{ request.GET.category }}">
+                                    Last
+                                </a>
+                            </li>
+
+                            {% endif %}
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

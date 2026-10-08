@@ -1,0 +1,8 @@
+Django
+pandas
+openpyxl
+reportlab
+Pillow
+mysqlclient
+gunicorn
+python-dotenv

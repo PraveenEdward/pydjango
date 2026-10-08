@@ -1,0 +1,218 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<div class="content-wrapper">
+<section class="content-header">
+
+    <h1>
+        Product Sales Report
+        <small>Date Wise Product Sales</small>
+    </h1>
+
+    <ol class="breadcrumb">
+
+        <li>
+            <a href="{% url 'dashboard' %}">
+                <i class="fa fa-dashboard"></i>
+                Dashboard
+            </a>
+        </li>
+
+        <li class="active">
+            Product Sales Report
+        </li>
+
+    </ol>
+
+</section>
+
+<section class="content">
+
+    <!-- Filter Box -->
+    <div class="box box-primary">
+
+        <div class="box-header with-border">
+
+            <h3 class="box-title">
+                Filter Report
+            </h3>
+
+        </div>
+
+        <form method="GET">
+
+            <div class="box-body">
+
+                <div class="row">
+
+                    <div class="col-md-3">
+
+                        <label>
+                            From Date
+                        </label>
+
+                        <input type="date"
+                               name="from_date"
+                               value="{{ from_date }}"
+                               class="form-control">
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label>
+                            To Date
+                        </label>
+
+                        <input type="date"
+                               name="to_date"
+                               value="{{ to_date }}"
+                               class="form-control">
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label>&nbsp;</label>
+
+                        <br>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa fa-search"></i>
+                            Filter
+
+                        </button>
+
+                        <a href="{% url 'product_sales_report' %}"
+                           class="btn btn-default">
+
+                            <i class="fa fa-refresh"></i>
+                            Reset
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- Report Table -->
+    <div class="box box-success">
+
+        <div class="box-header with-border">
+
+            <h3 class="box-title">
+
+                Product Sales Report
+
+            </h3>
+
+            <div class="box-tools pull-right">
+
+                <a href="?from_date={{ from_date }}&to_date={{ to_date }}&export=pdf"
+                   class="btn btn-danger btn-sm">
+
+                    <i class="fa fa-file-pdf-o"></i>
+                    Export PDF
+
+                </a>
+
+                <a href="?from_date={{ from_date }}&to_date={{ to_date }}&export=excel"
+                   class="btn btn-success btn-sm">
+
+                    <i class="fa fa-file-excel-o"></i>
+                    Export Excel
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="box-body table-responsive">
+
+            <table class="table table-bordered table-striped">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>
+                            Product Name
+                        </th>
+
+                        <th>
+                            Quantity Sold
+                        </th>
+
+                        <th>
+                            Total Amount
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in report %}
+
+                    <tr>
+
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+
+                        <td>
+                            {{ item.product__product_name }}
+                        </td>
+
+                        <td>
+                            {{ item.total_qty }}
+                        </td>
+
+                        <td>
+                            ₹{{ item.total_amount }}
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4"
+                            class="text-center text-danger">
+
+                            No records found.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+```
+
+</div>
+
+{% endblock %}
