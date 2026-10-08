@@ -125,3 +125,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 STATIC_ROOT = "/app/staticfiles/"
+
+STATICFILES_DIRS = [
+    "/app/static/",
+]
