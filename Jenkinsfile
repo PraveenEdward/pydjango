@@ -60,6 +60,7 @@ pipeline {
 		    string(
 			credentialsId: 'key',
 			variable: 'API_KEY'
+		     )
                 ]) {
                     sh '''
                         kubectl create secret generic pydjango-secret \
